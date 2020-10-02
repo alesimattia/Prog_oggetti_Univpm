@@ -1,0 +1,10 @@
+localhost:8080/contagi/paese?italia&germania
+
+CLASSE
+
+Paese
+tipo (contagi, guariti, ricoveri)
+max
+dataMax
+min
+dataMin
