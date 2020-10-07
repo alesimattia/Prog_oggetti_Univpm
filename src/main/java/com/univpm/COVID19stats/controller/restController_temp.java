@@ -13,7 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.univpm.COVID19stats.model.CountryExtDetail;
 
 @RestController
-public class restController {	// VEDI SE EVENTUALMENTE DICHIARARE RESTTEMPLATE+MAPPER GLOBALE
+public class restController_temp {	// VEDI SE EVENTUALMENTE DICHIARARE RESTTEMPLATE+MAPPER GLOBALE
 	
 	
 	/*Homepage con dati riassuntivi*/
@@ -47,7 +47,7 @@ public class restController {	// VEDI SE EVENTUALMENTE DICHIARARE RESTTEMPLATE+M
 	}
 	
 	
-	/*Periodo con {max} {contagi} per un determinato {paese}*/
+	/** Periodo con {max} {contagi} per un determinato {paese}*/
 	@RequestMapping(method=RequestMethod.GET, value="/{valore}/{tipo}/{paese}", produces="application/json" )
 	public String period( @RequestParam(name="valore" , defaultValue="max") String valore, 
 						  @RequestParam(name="tipo" , defaultValue="contagi") String tipo,
@@ -59,22 +59,68 @@ public class restController {	// VEDI SE EVENTUALMENTE DICHIARARE RESTTEMPLATE+M
 		RestTemplate restTemplate = new RestTemplate();
 	    CountryExtDetail[] objects = restTemplate.getForObject(url, CountryExtDetail[].class);
 	    
-	    Date selected;	//memorizza la data con maggiore impatto per ciò che si è scelto
-	    
-	    	 //max o min
+	    Date selectedDate;	//memorizza la data con maggiore impatto per ciò che si è scelto 
+	    	 
 	    switch (valore) {
-			case "max" :
-			    for(CountryExtDetail object : objects) {
-			    	if( object.getDeaths()() >> object.next().getDeaths() )	//UNA COSA DEL GENERE
-			    		selected = object.getDate();
-			    }
-			break;
+	    
+		case "min" :
+			/** Gestisce l'eccezione di url con parametro "tipo" non corretto */
+			if(! (tipo.equals("contagi") || tipo.equals("guariti") || tipo.equals("decessi") )  )	/** Necessaria risposta boolean => no compareTo() */
+				selectedDate = evaluate(valore, "contagi", objects);
+			else 
+				selectedDate = evaluate(valore, tipo, objects);
+		break;
+		
+		default:	/** "max" - Gestisce l'eccezione di url con parametro non corretto */
+			if(! (tipo.equals("contagi") || tipo.equals("guariti") || tipo.equals("decessi") )  )
+				selectedDate = evaluate("max", "contagi", objects);
+			else 
+				selectedDate = evaluate("max", tipo, objects);
+		break;
 	    }
+	    
+	    
+	    CountryExtDetail response = getRecordAt(selectedDate, objects);
 	    
 	    ObjectMapper mapper = new ObjectMapper();
 	    //Rilegge l'oggetto e lo formatta in json da inviare come risposta
 	    return mapper.writerWithDefaultPrettyPrinter()
-	    			 .writeValueAsString(objects);
+	    			 .writeValueAsString(response);
+	}
+	
+	
+	private Date evaluate(String order, String type, CountryExtDetail[] objects) {
+		Date date = null;
+		switch (type) {
+		
+		case "contagi":
+			if( order.compareTo("max") == 1 ) {
+				int max = 0;
+				for(CountryExtDetail object : objects) {
+			    	if( object.getDeaths() > max )
+			    		max = object.getDeaths();
+			    		date = object.getDate();  //memorizza la data come "chiave" per poi ritrovare l'elemento
+				}
+				return date;
+			}
+			else {
+				int min = Integer.MAX_VALUE;
+				for(CountryExtDetail object : objects) {
+			    	if( object.getDeaths() < min )
+			    		min = object.getDeaths();
+			    		date = object.getDate();  //memorizza la data come "chiave" per poi ritrovare l'elemento
+				}
+				return date;
+			}
+		}
+		return date;
+	}
+	
+	private CountryExtDetail getRecordAt(Date selDate, CountryExtDetail[] objects) {
+		for(CountryExtDetail object : objects)
+			if(object.getDate() == selDate)
+				return object;
+		return null;
 	}
 	
 }

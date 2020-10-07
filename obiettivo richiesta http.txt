@@ -1,4 +1,4 @@
-localhost:8080/contagi/paese?italia&germania
+localhost:8080/max/contagi/paese?italia&germania
 
 CLASSE
 
