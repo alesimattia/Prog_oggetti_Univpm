@@ -6,11 +6,14 @@ import com.univpm.COVID19stats.model.Bundle;
 
 public class RequestGenerator {
 
-	public Bundle[] getData(String categoria, Paese[] paesi) {
+	public Bundle[] getData(String categoria, Paese paesi) {
+
 
 	}
 
-	private String urlGenerator(String tipoDato, Paese[] paesi) {
+	private String urlGenerator(String tipoDato, Paese paesi) {
+
+
 
 	}
 
