@@ -3,7 +3,7 @@ package com.univpm.COVID19stats.model;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Dato {
+public class Bundle {
     @JsonProperty("Country")
     private String country;
     @JsonProperty("CountryCode")

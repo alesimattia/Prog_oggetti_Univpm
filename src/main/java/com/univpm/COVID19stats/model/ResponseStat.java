@@ -1,11 +1,11 @@
 package com.univpm.COVID19stats.model;
 
-public class RispostaStat {
+public class ResponseStat {
     private String paese;
     private String tipodidato;
     private String tipodistatistica;
     private double valore;
-	
+
     public String getPaese() {
 		return paese;
 	}
@@ -30,5 +30,5 @@ public class RispostaStat {
 	public void setValore(double valore) {
 		this.valore = valore;
 	}
-    
+
 }
