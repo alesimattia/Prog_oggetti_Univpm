@@ -3,7 +3,7 @@ package com.univpm.COVID19stats.model;
 public class Risposta {
     private Dato max;
     private Dato min;
-	
+
     public Dato getMax() {
 		return max;
 	}

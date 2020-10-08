@@ -1,11 +1,15 @@
 package com.univpm.COVID19stats.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Paese {
+    @JsonProperty("Country")
     private String country;
+    @JsonProperty("Slug")
     private String slug;
+    @JsonProperty("ISO2")
     private String iso2;
-	
+
     public String getCountry() {
 		return country;
 	}

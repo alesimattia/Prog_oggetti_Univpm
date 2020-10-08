@@ -4,14 +4,21 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Dato {
+    @JsonProperty("Country")
     private String country;
+    @JsonProperty("CountryCode")
     private String countryCode;
+    @JsonProperty("Lat")
     private float lat;
+    @JsonProperty("Lon")
     private float lon;
+    @JsonProperty("Cases")
     private double cases;
+    @JsonProperty("Status")
     private String status;
+    @JsonProperty("Date")
     private Date data;
-    
+
     public String getCountry() {
 		return country;
 	}

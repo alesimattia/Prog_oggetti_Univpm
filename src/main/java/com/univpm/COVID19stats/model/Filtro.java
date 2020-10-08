@@ -1,14 +1,20 @@
 package com.univpm.COVID19stats.model;
 
 import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Filtro {
+    @JsonProperty("percentuale")
     private boolean percentuale;
+    @JsonProperty("valoremax")
     private double valoremax;
+    @JsonProperty("valoremin")
     private double valoremin;
+    @JsonProperty("datamax")
     private Date datamax;
+    @JsonProperty("datamin")
     private Date datamin;
-	
+
     public boolean isPercentuale() {
 		return percentuale;
 	}
