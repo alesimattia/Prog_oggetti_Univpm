@@ -4,7 +4,11 @@ public class Response {
     private Bundle max;
     private Bundle min;
 
-    public Bundle getMax() {
+    public Response() {
+		this.max = null;
+		this.min = null;
+	}
+	public Bundle getMax() {
 		return max;
 	}
 	public void setMax(Bundle max) {

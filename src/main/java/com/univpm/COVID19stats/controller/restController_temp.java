@@ -12,7 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.univpm.COVID19stats.model.CountryExtDetail;
 
-@RestController
+
 public class restController_temp {	// VEDI SE EVENTUALMENTE DICHIARARE RESTTEMPLATE+MAPPER GLOBALE
 	
 	/*Informazioni giornaliere per un dato paese => corrisponde a "Day One All status" */
