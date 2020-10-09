@@ -15,21 +15,6 @@ import com.univpm.COVID19stats.model.CountryExtDetail;
 @RestController
 public class restController_temp {	// VEDI SE EVENTUALMENTE DICHIARARE RESTTEMPLATE+MAPPER GLOBALE
 	
-	
-	/*Homepage con dati riassuntivi*/
-	@RequestMapping(method=RequestMethod.GET, value="/", produces="application/json" )
-	public String home() {
-		final String url = "https://api.covid19api.com/summary";
-		
-		RestTemplate restTemplate = new RestTemplate();
-	    String ris = restTemplate.getForObject(url, String.class);
-	    
-	    //tronca parte delle informazioni nel json
-	    return "{"+  ris.substring( 14, ris.indexOf("}") )
-	    	 + "},"+ ris.substring( ris.length()-31, ris.length() );
-	}
-	
-	
 	/*Informazioni giornaliere per un dato paese => corrisponde a "Day One All status" */
 	@RequestMapping(method=RequestMethod.GET, value="/{paese}", produces="application/json" )
 	public String details( @RequestParam(name="paese" , defaultValue="italy") String paese) throws JsonProcessingException {

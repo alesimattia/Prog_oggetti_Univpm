@@ -16,6 +16,8 @@ public class FormatData {
 
 	}
 
+	/** Dataset con dati cumulativi -> ricava dati giornalieri 
+	 * tramite differenza con il giorno precedente */
 	private Bundle[] differenza(Bundle[] bundle) {
 
 	}
