@@ -6,7 +6,13 @@ public class ResponseStat {
     private String tipodistatistica;
     private double valore;
 
-    public String getPaese() {
+    public ResponseStat() {
+		this.paese = null;
+		this.tipodidato = null;
+		this.tipodistatistica = null;
+		this.valore = 0;
+	}
+	public String getPaese() {
 		return paese;
 	}
 	public void setPaese(String paese) {
