@@ -1,7 +1,9 @@
 package com.univpm.COVID19stats.controller;
 
 import com.univpm.COVID19stats.model.Paese;
+
 import com.univpm.COVID19stats.model.Response;
+
 import com.univpm.COVID19stats.model.Bundle;
 import com.univpm.COVID19stats.model.Filtro;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,6 +20,21 @@ import java.util.Vector;
 
 @RestController
 public class MainController {
+	
+	/*Homepage con dati riassuntivi*/
+	@RequestMapping(method=RequestMethod.GET, value="/", produces="application/json" )
+	public String home() {
+		final String url = "https://api.covid19api.com/summary";
+		
+		RestTemplate restTemplate = new RestTemplate();
+	    String ris = restTemplate.getForObject(url, String.class);
+	    
+	    //tronca parte delle informazioni nel json
+	    return "{"+  ris.substring( 14, ris.indexOf("}") )
+	    	 + "},"+ ris.substring( ris.length()-31, ris.length() );
+	}
+	
+	
 	@RequestMapping(method=RequestMethod.POST, value="/{categoria}", produces="application/json" )
 	public String Dati(@RequestParam(name="categoria",defaultValue="contagi") String categoria,	@RequestBody String body ) throws JsonProcessingException {
 
@@ -57,4 +74,5 @@ public class MainController {
 		//return risposta
 		return categoria;
 	}
+  
 }
