@@ -13,7 +13,7 @@ public class Filter {
 
 	}
 	//meglio passare Filtro.dataMin piuttosto che tutto l'oggetto filtro? (modifica diagramma classi)
-	private Bundle[] filtraData(Bundle[], Filtro filtro) {
+	private Bundle[] filtraData(Bundle[] bundle, Filtro filtro) {
 
 	}
 }
