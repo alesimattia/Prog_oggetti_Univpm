@@ -67,13 +67,16 @@ public class MainController {
 		Response risposta=new Response();
 		RequestGenerator rg = new RequestGenerator();
 		FormatData formatter = new FormatData();
+		Filter fil= new Filter();
 
 		for(Paese p:paesi) {
 			ArrayList<Bundle> dato=new ArrayList<Bundle>();
 			dato.addAll(rg.getData (categoria, p.getSlug()));
-			formatter.convert(dato, filtro);
+			//formatter.convert(dato, filtro);
 			//Formatdata
 			//Filter
+			fil.filtra(dato, filtro);
+			int i=0;
 			//Responsegenerator
 		}
 		//return risposta
