@@ -71,12 +71,13 @@ public class MainController {
 		for(Paese p:paesi) {
 			ArrayList<Bundle> dato=new ArrayList<Bundle>();
 			dato.addAll(rg.getData (categoria, p.getSlug()));
+			formatter.convert(dato, filtro);
 			//Formatdata
 			//Filter
 			//Responsegenerator
 		}
 		//return risposta
-		return categoria;
+		return "risposta";
 	}
 
 }
