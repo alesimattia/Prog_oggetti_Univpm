@@ -4,6 +4,7 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Filtro {
+	
     @JsonProperty("percentuale")
     private boolean percentuale;
     @JsonProperty("valoremax")

@@ -1,7 +1,5 @@
 package com.univpm.COVID19stats.controller;
 
-import com.univpm.COVID19stats.model.Paese;
-
 import java.util.ArrayList;
 
 import org.springframework.web.client.RestTemplate;
@@ -13,7 +11,8 @@ public class RequestGenerator {
 	public ArrayList<Bundle> getData(String categoria, String paese) {
 		
 		String url;
-       switch(categoria) {
+		
+		switch(categoria) {
        	case "decessi":
                 url = "https://api.covid19api.com/total/dayone/country/"+ paese +"/status/deaths";
             break;
@@ -23,12 +22,16 @@ public class RequestGenerator {
             default:
                 url = "https://api.covid19api.com/total/dayone/country/"+ paese +"/status/confirmed";
             break;
-       }
+		}
+		
         RestTemplate restTemplate = new RestTemplate();
         ArrayList<Bundle> objects = new ArrayList<Bundle>();
-        for(Bundle b: restTemplate.getForObject(url, Bundle[].class)) {
+        
+        /** Collection con le informazioni giornaliere sulla categoria 
+            scelta dall'utente per un dato paese */
+        for(Bundle b: restTemplate.getForObject(url, Bundle[].class))
         	objects.add(b);
-        }
+
         return objects;
 	}
 
