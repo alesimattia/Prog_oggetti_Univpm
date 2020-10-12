@@ -4,6 +4,7 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Bundle {
+	
     @JsonProperty("Country")
     private String country;
     @JsonProperty("CountryCode")

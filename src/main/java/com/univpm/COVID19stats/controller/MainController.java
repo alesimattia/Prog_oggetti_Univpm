@@ -44,20 +44,27 @@ public class MainController {
 		Pattern patt=Pattern.compile("\\},");
 		in.useDelimiter(patt);
 		ObjectMapper obj = new ObjectMapper();
+		
+		//Informazioni contenute nel requestBody
 		ArrayList<Paese> paesi= new ArrayList<Paese>();
 		Filtro filtro=new Filtro();
+		
+		/** Converte il requestBody negli oggetti Paese e Filtro */
 		while(in.hasNext()) {
 			String json=in.next()+"}";
 			if(json.contains("percentuale")) {
 				try {
-					filtro=obj.readValue(json, Filtro.class);
-				}catch(JsonProcessingException e){
+					filtro = obj.readValue(json, Filtro.class);
+				}
+				catch(JsonProcessingException e){
 					e.printStackTrace();
 				}
-			}else {
+			}
+			else {
 				try {
 					paesi.add(obj.readValue(json, Paese.class));
-				}catch(JsonProcessingException e){
+				}
+				catch(JsonProcessingException e){
 					e.printStackTrace();
 				}
 			}
@@ -72,11 +79,8 @@ public class MainController {
 		for(Paese p:paesi) {
 			ArrayList<Bundle> dato=new ArrayList<Bundle>();
 			dato.addAll(rg.getData (categoria, p.getSlug()));
-			//formatter.convert(dato, filtro);
-			//Formatdata
-			//Filter
+			formatter.convert(dato, filtro);
 			fil.filtra(dato, filtro);
-			int i=0;
 			//Responsegenerator
 		}
 		//return risposta
