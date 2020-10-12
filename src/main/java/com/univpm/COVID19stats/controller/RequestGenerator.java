@@ -29,9 +29,9 @@ public class RequestGenerator {
         
         /** Collection con le informazioni giornaliere sulla categoria 
             scelta dall'utente per un dato paese */
-        for(Bundle b: restTemplate.getForObject(url, Bundle[].class))
+        for(Bundle b: restTemplate.getForObject(url, Bundle[].class)) {
         	objects.add(b);
-
+        }
         return objects;
 	}
 

@@ -43,7 +43,6 @@ public class MainController {
 		Scanner in = new Scanner(body);
 		Pattern patt=Pattern.compile("\\},");
 		in.useDelimiter(patt);
-		
 		ObjectMapper obj = new ObjectMapper();
 		
 		//Informazioni contenute nel requestBody
@@ -80,7 +79,6 @@ public class MainController {
 			ArrayList<Bundle> dato=new ArrayList<Bundle>();
 			dato.addAll(rg.getData (categoria, p.getSlug()));
 			formatter.convert(dato, filtro);
-			//Formatdata
 			//Filter
 			//Responsegenerator
 		}
