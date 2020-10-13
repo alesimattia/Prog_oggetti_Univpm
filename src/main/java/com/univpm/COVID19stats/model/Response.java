@@ -1,6 +1,7 @@
 package com.univpm.COVID19stats.model;
 
 public class Response {
+	
     private Bundle max;
     private Bundle min;
 
@@ -8,6 +9,7 @@ public class Response {
 		this.max = null;
 		this.min = null;
 	}
+    
 	public Bundle getMax() {
 		return max;
 	}

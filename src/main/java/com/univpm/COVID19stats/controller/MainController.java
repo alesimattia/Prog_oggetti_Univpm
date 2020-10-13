@@ -70,21 +70,23 @@ public class MainController {
 			}
 		}
 		in.close();
-
-		Response risposta=new Response();
-		RequestGenerator rg = new RequestGenerator();
+		
+		RequestGenerator requestGen = new RequestGenerator();
 		FormatData formatter = new FormatData();
 		Filter fil= new Filter();
-
+		ResponseGenerator responseGen = new ResponseGenerator();
+		ArrayList<Response> risposta=new ArrayList<Response>();
+		
 		for(Paese p:paesi) {
 			ArrayList<Bundle> dato=new ArrayList<Bundle>();
-			dato.addAll(rg.getData (categoria, p.getSlug()));
+			dato.addAll(requestGen.getData (categoria, p.getSlug()));
 			formatter.convert(dato, filtro);
 			fil.filtra(dato, filtro);
-			//Responsegenerator
+			risposta.add( responseGen.getResponseMax(dato) );
+			risposta.add( responseGen.getResponseMin(dato) );
 		}
-		//return risposta
-		return "risposta";
+		//verifica se basta oppure serve il Mapper
+		return risposta.toString();
 	}
 
 }
