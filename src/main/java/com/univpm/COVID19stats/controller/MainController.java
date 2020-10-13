@@ -71,20 +71,30 @@ public class MainController {
 		}
 		in.close();
 
-		Response risposta=new Response();
+		ArrayList<Response> risposta=new ArrayList<Response>();
 		RequestGenerator rg = new RequestGenerator();
 		FormatData formatter = new FormatData();
 		Filter fil= new Filter();
+		ResponseGenerator rsg = new ResponseGenerator();
 
 		for(Paese p:paesi) {
 			ArrayList<Bundle> dato=new ArrayList<Bundle>();
+			Response rs = new Response();
 			dato.addAll(rg.getData (categoria, p.getSlug()));
 			formatter.convert(dato, filtro);
 			fil.filtra(dato, filtro);
-			//Responsegenerator
+			rs.setMax(rsg.getResponseMax(dato));
+			rs.setMin(rsg.getResponseMin(dato));
+			risposta.add(rs);
 		}
-		//return risposta
-		return "risposta";
+
+		String risp=null;
+		for(Response r:risposta) {
+			risp+=obj.writeValueAsString(r);
+		}
+		return risp;
 	}
+	
+	
 
 }
