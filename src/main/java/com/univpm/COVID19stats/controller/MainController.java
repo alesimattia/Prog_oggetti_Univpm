@@ -70,22 +70,22 @@ public class MainController {
 			}
 		}
 		in.close();
-
-		ArrayList<Response> risposta=new ArrayList<Response>();
-		RequestGenerator rg = new RequestGenerator();
+    
+		RequestGenerator requestGen = new RequestGenerator();
 		FormatData formatter = new FormatData();
-		Filter fil= new Filter();
-		ResponseGenerator rsg = new ResponseGenerator();
+		Filter dataFilter = new Filter();
+		ResponseGenerator responseGen = new ResponseGenerator();
+		ArrayList<Response> risposta=new ArrayList<Response>();
 
 		for(Paese p:paesi) {
 			ArrayList<Bundle> dato=new ArrayList<Bundle>();
-			Response rs = new Response();
-			dato.addAll(rg.getData (categoria, p.getSlug()));
+			Response response = new Response();
+			dato.addAll( response.getData (categoria, p.getSlug() ) );
 			formatter.convert(dato, filtro);
-			fil.filtra(dato, filtro);
-			rs.setMax(rsg.getResponseMax(dato));
-			rs.setMin(rsg.getResponseMin(dato));
-			risposta.add(rs);
+			dataFilter.filtra(dato, filtro);
+			response.setMax(responseGen.getResponseMax(dato));
+			response.setMin(responseGen.getResponseMin(dato));
+			risposta.add(response);
 		}
 
 		String risp=null;
@@ -94,7 +94,4 @@ public class MainController {
 		}
 		return risp;
 	}
-	
-	
-
 }

@@ -12,6 +12,7 @@ public class ResponseStat {
 		this.tipodistatistica = null;
 		this.valore = 0;
 	}
+    
 	public String getPaese() {
 		return paese;
 	}
