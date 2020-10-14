@@ -1,40 +1,59 @@
 package com.univpm.COVID19stats.controller;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import com.univpm.COVID19stats.model.Bundle;
-import com.univpm.COVID19stats.model.Filtro;
 
 public class FormatData {
 
-	public void convert(ArrayList<Bundle> bundle, Filtro filter) {
+	public void convert(ArrayList<Bundle> bundle, boolean isPercentuale ) {
 		
-		if(filter.isPercentuale())
-			toPercentage(bundle);
+		/** Memorizza il numero intero di casi giorno per giorno 
+	    perchè il dato viene sovrascritto da entrambi i metodi */
+		int[] numCasi = new int[bundle.size()];
+		for(int i=0; i<bundle.size(); i++) 
+			numCasi[i] = (int) bundle.get(i).getCases();
+		
+		if( isPercentuale )
+			toPercentage(bundle, numCasi);
 		else
-			differenza(bundle);
+			differenza(bundle, numCasi);
 	}
 
 	
 	/** Variazione percentuale (contagi/morti/guariti) rispetto al giorno precedente */
-	private void toPercentage(ArrayList<Bundle> bundle) {
+	private void toPercentage(ArrayList<Bundle> bundle, int numCasi[] ) {
 		// Si assume che le date siano ordinate e sequenzali
-		double rif= bundle.get(0).getCases(); 	//Riferimento giorno uno
 		
-		for(int i=1; i<bundle.size(); i++) {
-			double val = ( bundle.get(i).getCases()*100/rif )-100;
-			rif = val;
-			bundle.get(i).setCases(val);
+		/** Salta i primi giorni senza casi */
+		int count = 0;
+		int rif = 0;
+		while(rif == 0) {
+			rif = (int) bundle.get(count).getCases();
+			count++;
+		}
+
+		for(int i=count+1; i<bundle.size(); i++) {
+			if( numCasi[i-1] == numCasi[i] ) {
+				bundle.get(i).setCases(0);
+				int k=0; //per breakpoint
+			}
+			else {
+				double val = ( numCasi[i]*100/numCasi[i-1] );
+				bundle.get(i).setCases(val);
+				int j=0; //per breakpoint
+			}
 		}
 	}
 	
+	
 	/** Dataset con dati cumulativi -> ricava dati giornalieri 
 	    tramite differenza con il giorno precedente */
-	private void differenza(ArrayList<Bundle> bundle) {
+	private void differenza(ArrayList<Bundle> bundle, int numCasi[]) {
 		
-		for(int i=1; i<bundle.size(); i++) {
-			bundle.get(i).setCases( bundle.get(i-1).getCases() );
-		}
+		for(int i=1; i<bundle.size(); i++)
+			bundle.get(i).setCases( numCasi[i] - numCasi[i-1] );
 	}
 
 }

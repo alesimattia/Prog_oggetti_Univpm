@@ -3,7 +3,6 @@ package com.univpm.COVID19stats.controller;
 import java.util.ArrayList;
 
 import com.univpm.COVID19stats.model.Bundle;
-import com.univpm.COVID19stats.model.Response;
 import com.univpm.COVID19stats.model.ResponseStat;
 
 public class StatsGenerator {

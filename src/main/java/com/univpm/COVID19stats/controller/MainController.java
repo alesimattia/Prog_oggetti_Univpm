@@ -47,7 +47,8 @@ public class MainController {
 		
 		//Informazioni contenute nel requestBody
 		ArrayList<Paese> paesi= new ArrayList<Paese>();
-		Filtro filtro=new Filtro();
+		Filtro filtro = new Filtro();
+		boolean hasFilter = false;
 		
 		/** Converte il requestBody negli oggetti Paese e Filtro */
 		while(in.hasNext()) {
@@ -55,6 +56,7 @@ public class MainController {
 			if(json.contains("percentuale")) {
 				try {
 					filtro = obj.readValue(json, Filtro.class);
+					hasFilter = true;
 				}
 				catch(JsonProcessingException e){
 					e.printStackTrace();
@@ -80,18 +82,25 @@ public class MainController {
 		for(Paese p:paesi) {
 			ArrayList<Bundle> dato=new ArrayList<Bundle>();
 			Response response = new Response();
-			dato.addAll( response.getData (categoria, p.getSlug() ) );
-			formatter.convert(dato, filtro);
-			dataFilter.filtra(dato, filtro);
-			response.setMax(responseGen.getResponseMax(dato));
-			response.setMin(responseGen.getResponseMin(dato));
+			dato.addAll( requestGen.getData (categoria, p.getSlug() ) );
+			
+			if(hasFilter) {
+				formatter.convert(dato, filtro.isPercentuale() );
+				dataFilter.filtra(dato, filtro);
+			}
+			else
+				formatter.convert(dato, hasFilter );
+			
+			response.setMax( responseGen.getResponseMax(dato) );
+			response.setMin( responseGen.getResponseMin(dato) );
 			risposta.add(response);
 		}
 
-		String risp=null;
+		String risp ="";
 		for(Response r:risposta) {
 			risp+=obj.writeValueAsString(r);
 		}
+		
 		return risp;
 	}
 }
