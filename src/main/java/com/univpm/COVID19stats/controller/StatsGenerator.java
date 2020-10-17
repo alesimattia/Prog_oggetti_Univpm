@@ -7,10 +7,10 @@ import com.univpm.COVID19stats.model.ResponseStat;
 
 public class StatsGenerator {
 
-	public ResponseStat getStat(ArrayList<Bundle> bundle, String statType, String tipoDato) {
+	public ResponseStat getStat(ArrayList<Bundle> bundle, String statType) {
 		ResponseStat r = new ResponseStat();
 		r.setPaese(bundle.get(0).getCountry());
-		r.setTipodidato(tipoDato);
+		r.setTipodidato(bundle.get(0).getStatus());
 		r.setTipodistatistica(statType);
   
 		switch(statType) {
@@ -46,12 +46,10 @@ public class StatsGenerator {
   
 	private void max(ResponseStat r, ArrayList<Bundle> bundle) {
       double max = bundle.get(0).getCases();		//valore di riferimento
-      Bundle dayMax = null;
 
       for(Bundle current : bundle)
         if(current.getCases() > max) {
           max = current.getCases();
-          dayMax = current;
         }
       r.setValore(max);
 	}
@@ -59,12 +57,10 @@ public class StatsGenerator {
   
 	private void min(ResponseStat r, ArrayList<Bundle> bundle) {
       double min = bundle.get(0).getCases();
-      Bundle dayMin = null;
 
       for(Bundle current : bundle)
         if(current.getCases() < min) {
           min = current.getCases();
-          dayMin = current;
         }
       r.setValore(min);
 	}

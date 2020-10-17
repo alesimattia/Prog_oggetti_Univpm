@@ -1,8 +1,6 @@
 package com.univpm.COVID19stats.controller;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-
 import com.univpm.COVID19stats.model.Bundle;
 
 public class FormatData {
@@ -37,12 +35,10 @@ public class FormatData {
 		for(int i=count+1; i<bundle.size(); i++) {
 			if( numCasi[i-1] == numCasi[i] ) {
 				bundle.get(i).setCases(0);
-				int k=0; //per breakpoint
 			}
 			else {
 				double val = ( numCasi[i]*100/numCasi[i-1] );
 				bundle.get(i).setCases(val);
-				int j=0; //per breakpoint
 			}
 		}
 	}
