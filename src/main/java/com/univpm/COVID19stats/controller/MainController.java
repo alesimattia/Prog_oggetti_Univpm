@@ -42,7 +42,7 @@ public class MainController {
 
 
 	@RequestMapping(method=RequestMethod.POST, value="/{categoria}", produces="application/json" )
-	public String Dati(@PathVariable String categoria,	@RequestBody String body ) throws JsonProcessingException, ParseException {
+	public String work(@PathVariable String categoria,	@RequestBody String body ) throws JsonProcessingException, ParseException {
 
 		body=body.replaceAll("[\\[\\]]","");
 		body=body.replaceAll(" ","");
@@ -108,24 +108,12 @@ public class MainController {
 		String risp ="";
 		for(Response r:risposta)
 			risp+=obj.writeValueAsString(r);
-			
-			//Provato a sostituire Date con stringa direttamente nel json
-			/*int start = risp.lastIndexOf("\"Data\":\"")+1;
-			int end = risp.indexOf("lat:");
-			
-			char[] dateChar = null;
-			risp.getChars(start, end, dateChar, 0);
-			DateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.ITALIAN);
-			Date date = format.parse(dateChar.toString());
-			String dateString = date.toGMTString();
-			
-			risp.replace(dateChar.toString(), dateString);*/
 		
 		return risp;
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, value="/{categoria}/{tipostat}", produces="application/json" )
-	public String Dati(@PathVariable String categoria, @PathVariable String tipostat, @RequestBody String body ) throws JsonProcessingException, ParseException {
+	public String workWithStat(@PathVariable String categoria, @PathVariable String tipostat, @RequestBody String body ) throws JsonProcessingException, ParseException {
 
 		body=body.replaceAll("[\\[\\]]","");
 		body=body.replaceAll(" ","");
@@ -188,18 +176,6 @@ public class MainController {
 		String risp ="";
 		for(ResponseStat r:risposta)
 			risp+=obj.writeValueAsString(r);
-			
-			//Provato a sostituire Date con stringa direttamente nel json
-			/*int start = risp.lastIndexOf("\"Data\":\"")+1;
-			int end = risp.indexOf("lat:");
-			
-			char[] dateChar = null;
-			risp.getChars(start, end, dateChar, 0);
-			DateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.ITALIAN);
-			Date date = format.parse(dateChar.toString());
-			String dateString = date.toGMTString();
-			
-			risp.replace(dateChar.toString(), dateString);*/
 		
 		return risp;
 	}
