@@ -6,9 +6,9 @@ import com.univpm.COVID19stats.model.Response;
 import com.univpm.COVID19stats.model.ResponseStat;
 import com.univpm.COVID19stats.model.Bundle;
 import com.univpm.COVID19stats.model.Filtro;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
@@ -21,7 +21,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Locale;
 import java.util.regex.*;
 
@@ -43,7 +42,7 @@ public class MainController {
 
 
 	@RequestMapping(method=RequestMethod.POST, value="/{categoria}", produces="application/json" )
-	public String Dati(@RequestParam(name="categoria",defaultValue="contagi") String categoria,	@RequestBody String body ) throws JsonProcessingException, ParseException {
+	public String Dati(@PathVariable String categoria,	@RequestBody String body ) throws JsonProcessingException, ParseException {
 
 		body=body.replaceAll("[\\[\\]]","");
 		body=body.replaceAll(" ","");
@@ -126,7 +125,7 @@ public class MainController {
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, value="/{categoria}/{tipostat}", produces="application/json" )
-	public String Dati(@RequestParam(name="categoria",defaultValue="contagi") String categoria, @RequestParam(name="tipostat",defaultValue="contagiorni") String tipostat,	@RequestBody String body ) throws JsonProcessingException, ParseException {
+	public String Dati(@PathVariable String categoria, @PathVariable String tipostat, @RequestBody String body ) throws JsonProcessingException, ParseException {
 
 		body=body.replaceAll("[\\[\\]]","");
 		body=body.replaceAll(" ","");
@@ -174,7 +173,6 @@ public class MainController {
 
 		for(Paese p:paesi) {
 			ArrayList<Bundle> dato=new ArrayList<Bundle>();
-			Response response = new Response();
 			dato.addAll( requestGen.getData (categoria, p.getSlug() ) );
 			
 			if(hasFilter) {
@@ -184,7 +182,7 @@ public class MainController {
 			else
 				formatter.convert(dato, hasFilter );
 			
-			risposta.add(responseStat.getStat(dato, tipostat, categoria));
+			risposta.add(responseStat.getStat(dato, tipostat));
 		}
 
 		String risp ="";
