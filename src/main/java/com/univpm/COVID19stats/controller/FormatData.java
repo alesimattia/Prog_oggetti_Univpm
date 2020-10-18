@@ -10,6 +10,7 @@ public class FormatData {
 		/** Memorizza il numero intero di casi giorno per giorno 
 	    perchè il dato viene sovrascritto da entrambi i metodi */
 		int[] numCasi = new int[bundle.size()];
+		
 		for(int i=0; i<bundle.size(); i++) 
 			numCasi[i] = (int) bundle.get(i).getCases();
 		
@@ -33,9 +34,8 @@ public class FormatData {
 		}
 
 		for(int i=count+1; i<bundle.size(); i++) {
-			if( numCasi[i-1] == numCasi[i] ) {
+			if( numCasi[i-1] == numCasi[i] ) 
 				bundle.get(i).setCases(0);
-			}
 			else {
 				double val = ( numCasi[i]*100/numCasi[i-1] );
 				bundle.get(i).setCases(val);
@@ -50,6 +50,7 @@ public class FormatData {
 		
 		for(int i=1; i<bundle.size(); i++)
 			bundle.get(i).setCases( numCasi[i] - numCasi[i-1] );
+			int f=0;
 	}
 
 }

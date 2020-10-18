@@ -4,6 +4,8 @@ import com.univpm.COVID19stats.model.Paese;
 
 import com.univpm.COVID19stats.model.Response;
 import com.univpm.COVID19stats.model.ResponseStat;
+import com.univpm.COVID19stats.exceptions.InvalidJSONformat;
+import com.univpm.COVID19stats.exceptions.RequestBodyMissingException;
 import com.univpm.COVID19stats.model.Bundle;
 import com.univpm.COVID19stats.model.Filtro;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,20 +44,26 @@ public class MainController {
 
 
 	@RequestMapping(method=RequestMethod.POST, value="/{categoria}", produces="application/json" )
-	public String work(@PathVariable String categoria,	@RequestBody String body ) throws JsonProcessingException, ParseException {
-
-		body=body.replaceAll("[\\[\\]]","");
-		body=body.replaceAll(" ","");
-		Scanner in = new Scanner(body);
-		Pattern patt=Pattern.compile("\\},");
-		in.useDelimiter(patt);
+	public String work(@PathVariable String categoria,	@RequestBody String body ) throws RequestBodyMissingException, InvalidJSONformat, JsonProcessingException {
+		
+		Scanner in;
+		try {
+			body = body.replaceAll("[\\[\\]]","");
+			body = body.replaceAll(" ","");
+			Pattern patt = Pattern.compile("\\},");
+			in = new Scanner(body);
+			in.useDelimiter(patt);
+		}
+		catch (NullPointerException e) {
+			throw new RequestBodyMissingException();
+		}
 		
 		ObjectMapper obj = new ObjectMapper();
 		DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.ITALIAN);
 		obj.setDateFormat(dateFormat);
 		
 		//Informazioni contenute nel requestBody
-		ArrayList<Paese> paesi= new ArrayList<Paese>();
+		ArrayList<Paese> paesi = new ArrayList<Paese>();
 		Filtro filtro = new Filtro();
 		boolean hasFilter = false;
 		
@@ -68,7 +76,7 @@ public class MainController {
 					hasFilter = true;
 				}
 				catch(JsonProcessingException e){
-					e.printStackTrace();
+					throw new InvalidJSONformat();
 				}
 			}
 			else {
@@ -76,7 +84,7 @@ public class MainController {
 					paesi.add(obj.readValue(json, Paese.class));
 				}
 				catch(JsonProcessingException e){
-					e.printStackTrace();
+					throw new InvalidJSONformat();
 				}
 			}
 		}
@@ -113,13 +121,19 @@ public class MainController {
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, value="/{categoria}/{tipostat}", produces="application/json" )
-	public String workWithStat(@PathVariable String categoria, @PathVariable String tipostat, @RequestBody String body ) throws JsonProcessingException, ParseException {
+	public String workWithStat(@PathVariable String categoria, @PathVariable String tipostat, @RequestBody String body ) throws JsonProcessingException, ParseException, RequestBodyMissingException, InvalidJSONformat {
 
-		body=body.replaceAll("[\\[\\]]","");
-		body=body.replaceAll(" ","");
-		Scanner in = new Scanner(body);
-		Pattern patt=Pattern.compile("\\},");
-		in.useDelimiter(patt);
+		Scanner in;
+		try {
+			body = body.replaceAll("[\\[\\]]","");
+			body = body.replaceAll(" ","");
+			Pattern patt = Pattern.compile("\\},");
+			in = new Scanner(body);
+			in.useDelimiter(patt);
+		}
+		catch (NullPointerException e) {
+			throw new RequestBodyMissingException();
+		}
 		
 		ObjectMapper obj = new ObjectMapper();
 		DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.ITALIAN);
@@ -133,13 +147,14 @@ public class MainController {
 		/** Converte il requestBody negli oggetti Paese e Filtro */
 		while(in.hasNext()) {
 			String json=in.next()+"}";
+			
 			if(json.contains("percentuale")) {
 				try {
 					filtro = obj.readValue(json, Filtro.class);
 					hasFilter = true;
 				}
 				catch(JsonProcessingException e){
-					e.printStackTrace();
+					throw new InvalidJSONformat();
 				}
 			}
 			else {
@@ -147,7 +162,7 @@ public class MainController {
 					paesi.add(obj.readValue(json, Paese.class));
 				}
 				catch(JsonProcessingException e){
-					e.printStackTrace();
+					throw new InvalidJSONformat();
 				}
 			}
 		}
