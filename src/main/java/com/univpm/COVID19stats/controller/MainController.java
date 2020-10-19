@@ -4,12 +4,14 @@ import com.univpm.COVID19stats.model.Paese;
 
 import com.univpm.COVID19stats.model.Response;
 import com.univpm.COVID19stats.model.ResponseStat;
-import com.univpm.COVID19stats.exceptions.InvalidJSONformat;
-import com.univpm.COVID19stats.exceptions.RequestBodyMissingException;
+import com.univpm.COVID19stats.exceptions.RequestBodyException;
 import com.univpm.COVID19stats.model.Bundle;
 import com.univpm.COVID19stats.model.Filtro;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,14 +19,15 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 
 import java.util.Scanner;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.regex.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 @RestController
 public class MainController {
@@ -42,21 +45,27 @@ public class MainController {
 		+ "},"+ ris.substring( ris.length()-31, ris.length() );
 	}
 
-
+	
+	@ExceptionHandler(HttpMessageNotReadableException.class)
+	public String handler1(HttpMessageNotReadableException e) {
+		RequestBodyException handler = new RequestBodyException(e);
+		return handler.missingRequestBody(e);
+	}
+	@ExceptionHandler(UnrecognizedPropertyException.class)
+	public String handler2(UnrecognizedPropertyException e) {
+		RequestBodyException handler = new RequestBodyException(e);
+		return handler.wrongJSONformat(e);
+	}
+	
+	
 	@RequestMapping(method=RequestMethod.POST, value="/{categoria}", produces="application/json" )
-	public String work(@PathVariable String categoria,	@RequestBody String body ) throws RequestBodyMissingException, InvalidJSONformat, JsonProcessingException {
-		
-		Scanner in;
-		try {
-			body = body.replaceAll("[\\[\\]]","");
-			body = body.replaceAll(" ","");
-			Pattern patt = Pattern.compile("\\},");
-			in = new Scanner(body);
-			in.useDelimiter(patt);
-		}
-		catch (NullPointerException e) {
-			throw new RequestBodyMissingException();
-		}
+	public String work(@PathVariable String categoria, @RequestBody String body ) throws RequestBodyException, JsonProcessingException {
+
+		body = body.replaceAll("[\\[\\]]","");
+		body = body.replaceAll(" ","");
+		Pattern patt = Pattern.compile("\\},");
+		Scanner in = new Scanner(body);
+		in.useDelimiter(patt);
 		
 		ObjectMapper obj = new ObjectMapper();
 		DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.ITALIAN);
@@ -71,22 +80,11 @@ public class MainController {
 		while(in.hasNext()) {
 			String json=in.next()+"}";
 			if(json.contains("percentuale")) {
-				try {
-					filtro = obj.readValue(json, Filtro.class);
-					hasFilter = true;
-				}
-				catch(JsonProcessingException e){
-					throw new InvalidJSONformat();
-				}
+				filtro = obj.readValue(json, Filtro.class);
+				hasFilter = true;
 			}
-			else {
-				try {
-					paesi.add(obj.readValue(json, Paese.class));
-				}
-				catch(JsonProcessingException e){
-					throw new InvalidJSONformat();
-				}
-			}
+			else
+				paesi.add(obj.readValue(json, Paese.class));
 		}
 		in.close();
     
@@ -120,20 +118,15 @@ public class MainController {
 		return risp;
 	}
 	
+	
 	@RequestMapping(method=RequestMethod.POST, value="/{categoria}/{tipostat}", produces="application/json" )
-	public String workWithStat(@PathVariable String categoria, @PathVariable String tipostat, @RequestBody String body ) throws JsonProcessingException, ParseException, RequestBodyMissingException, InvalidJSONformat {
+	public String workWithStat(@PathVariable String categoria, @PathVariable String tipostat, @RequestBody String body ) throws JsonProcessingException, ParseException, RequestBodyException {
 
-		Scanner in;
-		try {
-			body = body.replaceAll("[\\[\\]]","");
-			body = body.replaceAll(" ","");
-			Pattern patt = Pattern.compile("\\},");
-			in = new Scanner(body);
-			in.useDelimiter(patt);
-		}
-		catch (NullPointerException e) {
-			throw new RequestBodyMissingException();
-		}
+		body = body.replaceAll("[\\[\\]]","");
+		body = body.replaceAll(" ","");
+		Pattern patt = Pattern.compile("\\},");
+		Scanner in = new Scanner(body);
+		in.useDelimiter(patt);
 		
 		ObjectMapper obj = new ObjectMapper();
 		DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.ITALIAN);
@@ -149,22 +142,11 @@ public class MainController {
 			String json=in.next()+"}";
 			
 			if(json.contains("percentuale")) {
-				try {
-					filtro = obj.readValue(json, Filtro.class);
-					hasFilter = true;
-				}
-				catch(JsonProcessingException e){
-					throw new InvalidJSONformat();
-				}
+				filtro = obj.readValue(json, Filtro.class);
+				hasFilter = true;
 			}
-			else {
-				try {
-					paesi.add(obj.readValue(json, Paese.class));
-				}
-				catch(JsonProcessingException e){
-					throw new InvalidJSONformat();
-				}
-			}
+			else
+				paesi.add(obj.readValue(json, Paese.class));
 		}
 		in.close();
     

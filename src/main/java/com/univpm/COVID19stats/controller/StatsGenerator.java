@@ -14,15 +14,15 @@ public class StatsGenerator {
 		r.setTipodistatistica(statType);
   
 		switch(statType) {
-        case "somma":{ somma(r,bundle); }
-        break;
-        case "media":{ media(r,bundle); }
-        break;
-        case "max":{ max(r,bundle); }
-        break;
-        case "min":{ min(r,bundle); }
-        break;
-        default:{ contaGiorni(r,bundle); }
+	        case "somma":{ somma(r,bundle); }
+	        break;
+	        case "media":{ media(r,bundle); }
+	        break;
+	        case "max":{ max(r,bundle); }
+	        break;
+	        case "min":{ min(r,bundle); }
+	        break;
+	        default:{ contaGiorni(r,bundle); }
 		}
 		return r;
 	}
