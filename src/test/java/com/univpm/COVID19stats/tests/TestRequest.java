@@ -4,10 +4,14 @@ import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
+import org.junit.Rule;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.rules.ExpectedException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
@@ -18,7 +22,6 @@ class TestRequest {
 
 	private MainController mainController;
 
-
 	@BeforeEach
 	void setUp() throws Exception {
 		mainController = new MainController();
@@ -28,27 +31,25 @@ class TestRequest {
 	void tearDown() throws Exception {
 	}
 
-	/*Il test lancia UnrecognizedProperty che però viene catturato e gestito dal nostro RequestBodyException
-	 * Vedere come adattare il test
-	 */
-	@Test
-	void MissingReqBody() {
-		assertAll(							/** Anche non passando correttamente il primo parametro, i metodi 'work' prevedono dei valori di fallback" */
-			(Executable) assertThrows(RequestBodyException.class, ()->mainController.work("whatever", null) ),
-			(Executable) assertThrows(RequestBodyException.class, ()->mainController.workWithStat("whatever", "any", null) )
-		);
-	}
 	
 	@Test
+	void MissingReqBody() {
+		assertThrows(NullPointerException.class, ()->mainController.work("whatever", null) );
+		assertThrows(NullPointerException.class, ()->mainController.workWithStat("whatever", "any", null) );
+		
+	}
+	
+	@Test()
 	void JsonParseError() {
 		String badJson = "{\"A\": \"Barbados\", \"B\": \"barbados\", \"C\": \"BB\" }";
-		assertThrows(RequestBodyException.class, ()->mainController.work("whatever", badJson) );
+		assertThrows(UnrecognizedPropertyException.class, ()->mainController.work("whatever", badJson) );
 	}
 	
 	@Test
 	void correctExecution() {
 		String goodJson1 = "{\"Country\": \"Barbados\", \"Slug\": \"barbados\", \"ISO2\": \"BB\" }";
-		String goodJson2 = "richiesta con filtro";
+		String goodJson2 = "{\"Country\": \"Italy\",\"Slug\": \"italy\",\"ISO2\": \"IT\" }, "
+						 + "{ \"percentuale\": true, \"valoremax\": 1200, \"valoremin\": 12, \"datamax\": null, \"datamin\": null }";
 		
 		assertDoesNotThrow( ()->mainController.work("whatever", goodJson1) );
 		assertDoesNotThrow( ()->mainController.workWithStat("whatever", "any", goodJson2) );
