@@ -4,13 +4,27 @@ import java.util.ArrayList;
 
 import com.univpm.COVID19stats.model.Bundle;
 
+/**
+*ResponseGenerator è la componente che consente di trovare i dati con maggiore
+*o minore impatto tra quelli passati
+*
+*
+*@author Mattia Alesi, Marco Incipini
+*@version 1.0
+*/
 public class ResponseGenerator {
 
-	public Bundle getResponseMax(ArrayList<Bundle> bundle) {
-		
-		double max = bundle.get(0).getCases();		//valore di riferimento
+	/**
+	*Metodo pubblico che restituisce il dato contenente il maggiore impatto
+	*
+	*@param bundle ArrayList contenente i dati
+	*@return Bundle contenente il dato con maggiore impatto
+	*/
+	public static Bundle getResponseMax(ArrayList<Bundle> bundle) {
+
+		double max = bundle.get(0).getCases();
 		Bundle dayMax = bundle.get(0);
-		
+
 		for(int i=1; i<bundle.size(); i++) {
 			if(bundle.get(i).getCases() > max) {
 				max = bundle.get(i).getCases();
@@ -20,12 +34,17 @@ public class ResponseGenerator {
 		return dayMax;
 	}
 
-	
-	public Bundle getResponseMin(ArrayList<Bundle> bundle) {
-		
-		double min = bundle.get(0).getCases();		//valore di riferimento
+	/**
+	*Metodo pubblico che restituisce il dato contenente il minore impatto
+	*
+	*@param bundle ArrayList contenente i dati
+	*@return Bundle contenente il dato con minore impatto
+	*/
+	public static Bundle getResponseMin(ArrayList<Bundle> bundle) {
+
+		double min = bundle.get(0).getCases();
 		Bundle dayMin = bundle.get(0);
-		
+
 		for(int i=1; i<bundle.size(); i++) {
 			if(bundle.get(i).getCases() < min) {
 				min = bundle.get(i).getCases();
