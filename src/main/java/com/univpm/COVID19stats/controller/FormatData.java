@@ -23,7 +23,8 @@ public class FormatData {
 	public static void convert(ArrayList<Bundle> bundle, boolean isPercentuale ) {
 
 		int[] numCasi = new int[bundle.size()];
-		for(int i=0; i<bundle.size(); i++)
+    
+		for(int i=0; i<bundle.size(); i++) 
 			numCasi[i] = (int) bundle.get(i).getCases();
 
 		if( isPercentuale )
@@ -49,11 +50,10 @@ public class FormatData {
 		}
 
 		for(int i=count+1; i<bundle.size(); i++) {
-			if( numCasi[i-1] == numCasi[i] ) {
+			if( numCasi[i-1] == numCasi[i] ) 
 				bundle.get(i).setCases(0);
-			}
 			else {
-				double val = ( numCasi[i]*100/numCasi[i-1] );
+				double val = ( (numCasi[i]*100)/numCasi[i-1] );
 				bundle.get(i).setCases(val);
 			}
 		}

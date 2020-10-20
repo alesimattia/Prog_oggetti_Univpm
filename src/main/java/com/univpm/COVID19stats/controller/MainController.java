@@ -4,10 +4,14 @@ import com.univpm.COVID19stats.model.Paese;
 
 import com.univpm.COVID19stats.model.Response;
 import com.univpm.COVID19stats.model.ResponseStat;
+import com.univpm.COVID19stats.exceptions.RequestBodyException;
 import com.univpm.COVID19stats.model.Bundle;
 import com.univpm.COVID19stats.model.Filtro;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,14 +19,15 @@ import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 
 import java.util.Scanner;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.regex.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 /**
 *Main controller è il controller principale dell'applicazione che implementa tre
@@ -53,8 +58,19 @@ public class MainController {
 		+ "},"+ ris.substring( ris.length()-31, ris.length() );
 	}
 
-
-	/**
+	
+	@ExceptionHandler(HttpMessageNotReadableException.class)
+	public String handler1(HttpMessageNotReadableException e) {
+		RequestBodyException handler = new RequestBodyException(e);
+		return handler.missingRequestBody(e);
+	}
+	@ExceptionHandler(UnrecognizedPropertyException.class)
+	public String handler2(UnrecognizedPropertyException e) {
+		RequestBodyException handler = new RequestBodyException(e);
+		return handler.wrongJSONformat(e);
+	}
+ 
+  /**
 	*Metodo che gestisce una richiesta effettuata senza specificare una statistica
 	*
 	*@param categoria tipologia di dato su cui effettuare la ricerca
@@ -62,12 +78,12 @@ public class MainController {
 	*@return Json contenente dati con maggiore o minore impatto
 	*/
 	@RequestMapping(method=RequestMethod.POST, value="/{categoria}", produces="application/json" )
-	public String Dati(@PathVariable String categoria,	@RequestBody String body ) throws JsonProcessingException, ParseException {
+	public String work(@PathVariable String categoria, @RequestBody String body ) throws RequestBodyException, JsonProcessingException {
 
-		body=body.replaceAll("[\\[\\]]","");
-		body=body.replaceAll(" ","");
+		body = body.replaceAll("[\\[\\]]","");
+		body = body.replaceAll(" ","");
+		Pattern patt = Pattern.compile("\\},");
 		Scanner in = new Scanner(body);
-		Pattern patt=Pattern.compile("\\},");
 		in.useDelimiter(patt);
 
 		ObjectMapper obj = new ObjectMapper();
@@ -75,7 +91,7 @@ public class MainController {
 		obj.setDateFormat(dateFormat);
 
 		//Informazioni contenute nel requestBody
-		ArrayList<Paese> paesi= new ArrayList<Paese>();
+		ArrayList<Paese> paesi = new ArrayList<Paese>();
 		Filtro filtro = new Filtro();
 		boolean hasFilter = false;
 
@@ -83,22 +99,11 @@ public class MainController {
 		while(in.hasNext()) {
 			String json=in.next()+"}";
 			if(json.contains("percentuale")) {
-				try {
-					filtro = obj.readValue(json, Filtro.class);
-					hasFilter = true;
-				}
-				catch(JsonProcessingException e){
-					e.printStackTrace();
-				}
+				filtro = obj.readValue(json, Filtro.class);
+				hasFilter = true;
 			}
-			else {
-				try {
-					paesi.add(obj.readValue(json, Paese.class));
-				}
-				catch(JsonProcessingException e){
-					e.printStackTrace();
-				}
-			}
+			else
+				paesi.add(obj.readValue(json, Paese.class));
 		}
 		in.close();
 
@@ -124,11 +129,11 @@ public class MainController {
 		String risp ="";
 		for(Response r:risposta)
 			risp+=obj.writeValueAsString(r);
-
+    
 		return risp;
-	}
-
-	/**
+  }
+  
+  /**
 	*Metodo che gestisce la richiesta di una statistica sui dati
 	*
 	*@param categoria tipologia di dato su cui effettuare la ricerca
@@ -137,12 +142,12 @@ public class MainController {
 	*@return Json contenente dati con maggiore o minore impatto
 	*/
 	@RequestMapping(method=RequestMethod.POST, value="/{categoria}/{tipostat}", produces="application/json" )
-	public String Dati(@PathVariable String categoria, @PathVariable String tipostat, @RequestBody String body ) throws JsonProcessingException, ParseException {
+	public String workWithStat(@PathVariable String categoria, @PathVariable String tipostat, @RequestBody String body ) throws JsonProcessingException, ParseException, RequestBodyException {
 
-		body=body.replaceAll("[\\[\\]]","");
-		body=body.replaceAll(" ","");
+		body = body.replaceAll("[\\[\\]]","");
+		body = body.replaceAll(" ","");
+		Pattern patt = Pattern.compile("\\},");
 		Scanner in = new Scanner(body);
-		Pattern patt=Pattern.compile("\\},");
 		in.useDelimiter(patt);
 
 		ObjectMapper obj = new ObjectMapper();
@@ -157,23 +162,13 @@ public class MainController {
 		/** Converte il requestBody negli oggetti Paese e Filtro */
 		while(in.hasNext()) {
 			String json=in.next()+"}";
+			
 			if(json.contains("percentuale")) {
-				try {
-					filtro = obj.readValue(json, Filtro.class);
-					hasFilter = true;
-				}
-				catch(JsonProcessingException e){
-					e.printStackTrace();
-				}
+				filtro = obj.readValue(json, Filtro.class);
+				hasFilter = true;
 			}
-			else {
-				try {
-					paesi.add(obj.readValue(json, Paese.class));
-				}
-				catch(JsonProcessingException e){
-					e.printStackTrace();
-				}
-			}
+			else
+				paesi.add(obj.readValue(json, Paese.class));
 		}
 		in.close();
 
@@ -196,6 +191,7 @@ public class MainController {
 		String risp ="";
 		for(ResponseStat r:risposta)
 			risp+=obj.writeValueAsString(r);
+    
 		return risp;
 	}
 }
