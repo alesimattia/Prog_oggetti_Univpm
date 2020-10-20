@@ -24,10 +24,23 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.regex.*;
 
+/**
+*Main controller è il controller principale dell'applicazione che implementa tre
+*metodi in grado di gestire le richieste ricevute
+*
+*
+*@author Mattia Alesi, Marco Incipini
+*@version 1.0
+*/
 @RestController
 public class MainController {
 
-	/*Homepage con dati riassuntivi*/
+	/**
+	*Metodo che gestisce una richiesta effettuata senza specificare statistica o
+	*tipologia di dato
+	*
+	*@return Json contenente dati globali sul COVID-19
+	*/
 	@RequestMapping(method=RequestMethod.GET, value="/", produces="application/json" )
 	public String home() {
 		final String url = "https://api.covid19api.com/summary";
@@ -41,6 +54,13 @@ public class MainController {
 	}
 
 
+	/**
+	*Metodo che gestisce una richiesta effettuata senza specificare una statistica
+	*
+	*@param categoria tipologia di dato su cui effettuare la ricerca
+	*@param body json contenente i paesi d'interesse ed il filtro da applicare ai dati
+	*@return Json contenente dati con maggiore o minore impatto
+	*/
 	@RequestMapping(method=RequestMethod.POST, value="/{categoria}", produces="application/json" )
 	public String Dati(@PathVariable String categoria,	@RequestBody String body ) throws JsonProcessingException, ParseException {
 
@@ -49,16 +69,16 @@ public class MainController {
 		Scanner in = new Scanner(body);
 		Pattern patt=Pattern.compile("\\},");
 		in.useDelimiter(patt);
-		
+
 		ObjectMapper obj = new ObjectMapper();
 		DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.ITALIAN);
 		obj.setDateFormat(dateFormat);
-		
+
 		//Informazioni contenute nel requestBody
 		ArrayList<Paese> paesi= new ArrayList<Paese>();
 		Filtro filtro = new Filtro();
 		boolean hasFilter = false;
-		
+
 		/** Converte il requestBody negli oggetti Paese e Filtro */
 		while(in.hasNext()) {
 			String json=in.next()+"}";
@@ -81,49 +101,41 @@ public class MainController {
 			}
 		}
 		in.close();
-    
-		RequestGenerator requestGen = new RequestGenerator();
-		FormatData formatter = new FormatData();
-		Filter dataFilter = new Filter();
-		ResponseGenerator responseGen = new ResponseGenerator();
+
 		ArrayList<Response> risposta=new ArrayList<Response>();
 
 		for(Paese p:paesi) {
 			ArrayList<Bundle> dato=new ArrayList<Bundle>();
 			Response response = new Response();
-			dato.addAll( requestGen.getData (categoria, p.getSlug() ) );
-			
+			dato.addAll( RequestGenerator.getData(categoria, p.getSlug()) );
+
 			if(hasFilter) {
-				formatter.convert(dato, filtro.isPercentuale() );
-				dataFilter.filtra(dato, filtro);
+				FormatData.convert(dato, filtro.isPercentuale() );
+				Filter.filtra(dato, filtro);
 			}
 			else
-				formatter.convert(dato, hasFilter );
-			
-			response.setMax( responseGen.getResponseMax(dato) );
-			response.setMin( responseGen.getResponseMin(dato) );
+				FormatData.convert(dato, hasFilter );
+
+			response.setMax( ResponseGenerator.getResponseMax(dato) );
+			response.setMin( ResponseGenerator.getResponseMin(dato) );
 			risposta.add(response);
 		}
 
 		String risp ="";
 		for(Response r:risposta)
 			risp+=obj.writeValueAsString(r);
-			
-			//Provato a sostituire Date con stringa direttamente nel json
-			/*int start = risp.lastIndexOf("\"Data\":\"")+1;
-			int end = risp.indexOf("lat:");
-			
-			char[] dateChar = null;
-			risp.getChars(start, end, dateChar, 0);
-			DateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.ITALIAN);
-			Date date = format.parse(dateChar.toString());
-			String dateString = date.toGMTString();
-			
-			risp.replace(dateChar.toString(), dateString);*/
-		
+
 		return risp;
 	}
-	
+
+	/**
+	*Metodo che gestisce la richiesta di una statistica sui dati
+	*
+	*@param categoria tipologia di dato su cui effettuare la ricerca
+	*@param tipostat tipologia di statistica richiesta
+	*@param body json contenente i paesi d'interesse ed il filtro da applicare ai dati
+	*@return Json contenente dati con maggiore o minore impatto
+	*/
 	@RequestMapping(method=RequestMethod.POST, value="/{categoria}/{tipostat}", produces="application/json" )
 	public String Dati(@PathVariable String categoria, @PathVariable String tipostat, @RequestBody String body ) throws JsonProcessingException, ParseException {
 
@@ -132,16 +144,16 @@ public class MainController {
 		Scanner in = new Scanner(body);
 		Pattern patt=Pattern.compile("\\},");
 		in.useDelimiter(patt);
-		
+
 		ObjectMapper obj = new ObjectMapper();
 		DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.ITALIAN);
 		obj.setDateFormat(dateFormat);
-		
+
 		//Informazioni contenute nel requestBody
 		ArrayList<Paese> paesi= new ArrayList<Paese>();
 		Filtro filtro = new Filtro();
 		boolean hasFilter = false;
-		
+
 		/** Converte il requestBody negli oggetti Paese e Filtro */
 		while(in.hasNext()) {
 			String json=in.next()+"}";
@@ -164,43 +176,26 @@ public class MainController {
 			}
 		}
 		in.close();
-    
-		RequestGenerator requestGen = new RequestGenerator();
-		FormatData formatter = new FormatData();
-		Filter dataFilter = new Filter();
-		StatsGenerator responseStat = new StatsGenerator();
+
 		ArrayList<ResponseStat> risposta=new ArrayList<ResponseStat>();
 
 		for(Paese p:paesi) {
 			ArrayList<Bundle> dato=new ArrayList<Bundle>();
-			dato.addAll( requestGen.getData (categoria, p.getSlug() ) );
-			
+			dato.addAll( RequestGenerator.getData(categoria, p.getSlug()) );
+
 			if(hasFilter) {
-				formatter.convert(dato, filtro.isPercentuale() );
-				dataFilter.filtra(dato, filtro);
+				FormatData.convert(dato, filtro.isPercentuale() );
+				Filter.filtra(dato, filtro);
 			}
 			else
-				formatter.convert(dato, hasFilter );
-			
-			risposta.add(responseStat.getStat(dato, tipostat));
+				FormatData.convert(dato, hasFilter );
+
+			risposta.add(StatsGenerator.getStat(dato, tipostat));
 		}
 
 		String risp ="";
 		for(ResponseStat r:risposta)
 			risp+=obj.writeValueAsString(r);
-			
-			//Provato a sostituire Date con stringa direttamente nel json
-			/*int start = risp.lastIndexOf("\"Data\":\"")+1;
-			int end = risp.indexOf("lat:");
-			
-			char[] dateChar = null;
-			risp.getChars(start, end, dateChar, 0);
-			DateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.ITALIAN);
-			Date date = format.parse(dateChar.toString());
-			String dateString = date.toGMTString();
-			
-			risp.replace(dateChar.toString(), dateString);*/
-		
 		return risp;
 	}
 }
