@@ -18,6 +18,11 @@ import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.univpm.COVID19stats.controller.MainController;
 import com.univpm.COVID19stats.exceptions.RequestBodyException;
 
+/** Classe con cui vengono effettuati i test 
+ * usando il framework Junit 5
+ * @author Alesi Mattia, Incipini Marco
+ *
+ */
 class TestRequest {
 
 	private MainController mainController;
@@ -31,20 +36,47 @@ class TestRequest {
 	void tearDown() throws Exception {
 	}
 
-	
+	/** Verifica che in assenza di un RequestBody della richiesta POST
+	 *  venga lanciata l'eccezione che verrà poi gestita da un'apposita classe.
+	 *  Non è rilevante la categoria/statistica che si inserisce nell'URL perchè
+	 *  il metodo prevede valori di fallback
+	 *  @see RequestBodyException.class
+	 *  @exception NullPointerException
+	 *  <br>
+	 *  L'operazione viene ripetuta per entrambi i metodi del controller
+	 *  per testare entrambi i tipi di richiesta HTTP utilizzabili
+	 *  @see MainController.class
+	 */
 	@Test
 	void MissingReqBody() {
 		assertThrows(NullPointerException.class, ()->mainController.work("whatever", null) );
 		assertThrows(NullPointerException.class, ()->mainController.workWithStat("whatever", "any", null) );
-		
 	}
 	
+	
+	/** Verifica che nel caso in cui si abbia scritto un JSON nel RequestBody
+	 * in modo non corretto, venga lanciata l'eccezione che sarà gestita 
+	 * dall'apposita classe custom
+	 * @see RequestBodyException.class
+	 * @exception UnrecognizedPropertyException
+	 * L'operazione viene ripetuta per entrambi i metodi del controller
+	 * per testare entrambi i tipi di richiesta HTTP utilizzabili
+	 * @see MainController.class
+	 */
 	@Test()
 	void JsonParseError() {
 		String badJson = "{\"A\": \"Barbados\", \"B\": \"barbados\", \"C\": \"BB\" }";
 		assertThrows(UnrecognizedPropertyException.class, ()->mainController.work("whatever", badJson) );
+		assertThrows(UnrecognizedPropertyException.class, ()->mainController.workWithStat("whatever", "any", badJson) );
 	}
 	
+	
+	/** Verifica che in presenza di una richiesta POST effettuata correttamente
+	 * 	l'applicazione risponda senza lanciare alcuna eccezione.
+	 *  L'operazione è ripetuta per entrambi i tipi di chiamate HTTP possibili
+	 *  { @http://localhost:8080/{tipo} }
+	 *  { @http://localhost:8080/{tipo}/{statistica} }
+	 */
 	@Test
 	void correctExecution() {
 		String goodJson1 = "{\"Country\": \"Barbados\", \"Slug\": \"barbados\", \"ISO2\": \"BB\" }";
