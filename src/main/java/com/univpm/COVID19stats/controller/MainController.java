@@ -75,13 +75,29 @@ public class MainController {
 		RequestBodyException handler = new RequestBodyException(e);
 		return handler.missingRequestBody(e);
 	}
+	/** Gestori delle eccezioni: Catturano le eccezioni previste
+	 * e le inviano alla classe custom {@link RequestBodyException}
+	 * per la gestione.
+	 * 
+	 * @see RequestBodyException
+	 * @param e Oggetto errore tipizzato dalla classe che ha lanciato l'eccezione
+	 * @return String da inviare nel ResponseObject
+	 */
 	@ExceptionHandler(UnrecognizedPropertyException.class)
 	public String handler2(UnrecognizedPropertyException e) {
 		RequestBodyException handler = new RequestBodyException(e);
 		return handler.wrongJSONformat(e);
 	}
+	/** Gestori delle eccezioni: Catturano le eccezioni previste
+	 * e le inviano alla classe custom {@link RequestBodyException}
+	 * per la gestione.
+	 * 
+	 * @see RequestBodyException
+	 * @param e Oggetto errore tipizzato dalla classe che ha lanciato l'eccezione
+	 * @return String da inviare nel ResponseObject
+	 */
 	@ExceptionHandler(JsonParseException.class)
-	public String handler2(JsonParseException e) {
+	public String handler3(JsonParseException e) {
 		RequestBodyException handler = new RequestBodyException(e);
 		return handler.wrongJSONvalues(e);
 	}

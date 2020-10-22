@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"com.univpm.COVID19stats.controller"},{"l":"com.univpm.COVID19stats.exceptions"},{"l":"com.univpm.COVID19stats.model"},{"l":"com.univpm.COVID19stats.tests"}]

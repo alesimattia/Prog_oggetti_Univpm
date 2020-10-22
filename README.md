@@ -12,6 +12,10 @@ Le informazioni sono recuperate tramite una chiamata all'Api REST https://covid1
 Successivamente, i dati che sono in formato testuale, vengono modellati in un'apposita classe per poi essere manipolati e calcolare delle statistiche da restituire all'utente.  
 
 ---
+## Diagramma dei Casi d'uso
+![diag_casi](/diagramma_casi.png)
+
+---
 ## Diagramma delle Classi
 <br>
 
@@ -22,7 +26,12 @@ Successivamente, i dati che sono in formato testuale, vengono modellati in un'ap
 ## Diagramma delle Sequenze
 <br>
 
-![diag_casi_uso](/diagramma_sequenze.png)
+### Richiesta dati
+![diag_sequenze2](/diagramma_sequenze.png)
+<br>
+
+### Richiesta statistiche
+![diag_sequenze3](/diagramma_sequenze_stat.png)
 
 ---
 <br>

@@ -1,0 +1,5 @@
+com.univpm.COVID19stats
+com.univpm.COVID19stats.controller
+com.univpm.COVID19stats.exceptions
+com.univpm.COVID19stats.model
+com.univpm.COVID19stats.tests
