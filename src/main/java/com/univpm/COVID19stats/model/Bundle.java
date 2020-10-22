@@ -56,9 +56,9 @@ public class Bundle {
 		return country;
 	}
 	/**
-	*Modifica il valore countrty nell'oggetto
+	*Modifica il valore country nell'oggetto
 	*
-	*@param countriy String contenente il valore da impostare
+	*@param country String contenente il valore da impostare
 	*/
 	public void setCountry(String country) {
 		this.country = country;

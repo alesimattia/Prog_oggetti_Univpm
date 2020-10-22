@@ -15,10 +15,10 @@ import com.univpm.COVID19stats.model.Bundle;
 public class ResponseGenerator {
 
 	/**
-	*Metodo pubblico che restituisce il dato contenente il maggiore impatto
+	*Metodo pubblico che restituisce il record (giorno) contenente il maggiore impatto
 	*
 	*@param bundle ArrayList contenente i dati
-	*@return Bundle contenente il dato con maggiore impatto
+	*@return Bundle contenente il record con maggiore impatto
 	*/
 	public static Bundle getResponseMax(ArrayList<Bundle> bundle) {
 
@@ -35,13 +35,13 @@ public class ResponseGenerator {
 	}
 
 	/**
-	*Metodo pubblico che restituisce il dato contenente il minore impatto
+	*Metodo pubblico che restituisce il record (giorno) contenente il minore impatto
 	*
 	*@param bundle ArrayList contenente i dati
-	*@return Bundle contenente il dato con minore impatto
+	*@return Bundle contenente il record con minore impatto
 	*/
 	public static Bundle getResponseMin(ArrayList<Bundle> bundle) {
-
+		
 		double min = bundle.get(0).getCases();
 		Bundle dayMin = bundle.get(0);
 
@@ -49,6 +49,7 @@ public class ResponseGenerator {
 			if(bundle.get(i).getCases() < min) {
 				min = bundle.get(i).getCases();
 				dayMin = bundle.get(i);
+				int f=0;
 			}
 		}
 		return dayMin;

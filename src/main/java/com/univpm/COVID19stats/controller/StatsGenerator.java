@@ -19,6 +19,7 @@ public class StatsGenerator {
 	*Metodo pubblico che restituisce il dato statistico calcolato
 	*
 	*@param bundle ArrayList contenente i dati
+	*@param statType tipo di statistica da effettuare. Recuperato dall'URL
 	*@return ResponseStat contenente il dato statistico
 	*/
 	public static ResponseStat getStat(ArrayList<Bundle> bundle, String statType) {
@@ -41,6 +42,7 @@ public class StatsGenerator {
 		return r;
 	}
 
+	
 	/**
 	*Metodo che calcola la somma dei dati passati
 	*
@@ -54,6 +56,7 @@ public class StatsGenerator {
       r.setValore(somma);
 	}
 
+	
 	/**
 	*Metodo che calcola la media dei dati passati
 	*
@@ -67,6 +70,7 @@ public class StatsGenerator {
 		r.setValore((somma/bundle.size()));
 	}
 
+	
 	/**
 	*Metodo che trova il massimo tra i dati passati
 	*
@@ -83,6 +87,7 @@ public class StatsGenerator {
       r.setValore(max);
 	}
 
+	
 	/**
 	*Metodo che trova il minimo tra i dati passati
 	*
@@ -99,6 +104,7 @@ public class StatsGenerator {
       r.setValore(min);
 	}
 
+	
 	/**
 	*Metodo che conta i dati passati
 	*

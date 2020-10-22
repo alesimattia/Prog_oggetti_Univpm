@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 
@@ -40,6 +42,7 @@ import java.text.SimpleDateFormat;
 @RestController
 public class MainController {
 
+	
 	/**
 	*Metodo che gestisce una richiesta effettuata senza specificare statistica o
 	*tipologia di dato
@@ -59,6 +62,14 @@ public class MainController {
 	}
 
 	
+	/** Gestori delle eccezioni: Catturano le eccezioni previste
+	 * e le inviano alla classe custom {@link RequestBodyException}
+	 * per la gestione.
+	 * 
+	 * @see RequestBodyException
+	 * @param e Oggetto errore tipizzato dalla classe che ha lanciato l'eccezione
+	 * @return String da inviare nel ResponseObject
+	 */
 	@ExceptionHandler(HttpMessageNotReadableException.class)
 	public String handler1(HttpMessageNotReadableException e) {
 		RequestBodyException handler = new RequestBodyException(e);
@@ -69,16 +80,23 @@ public class MainController {
 		RequestBodyException handler = new RequestBodyException(e);
 		return handler.wrongJSONformat(e);
 	}
+	@ExceptionHandler(JsonParseException.class)
+	public String handler2(JsonParseException e) {
+		RequestBodyException handler = new RequestBodyException(e);
+		return handler.wrongJSONvalues(e);
+	}
  
-  /**
-	*Metodo che gestisce una richiesta effettuata senza specificare una statistica
-	*
-	*@param categoria tipologia di dato su cui effettuare la ricerca
-	*@param body json contenente i paesi d'interesse ed il filtro da applicare ai dati
-	*@return Json contenente dati con maggiore o minore impatto
+	
+	/**
+	 *Metodo che gestisce una richiesta effettuata senza specificare una statistica
+	 *
+	 *@param categoria tipologia di dato su cui effettuare la ricerca
+	 *@param body json contenente i paesi d'interesse ed il filtro da applicare ai dati
+	 *@throws JsonProcessingException
+	 *@return Json contenente dati con maggiore o minore impatto
 	*/
 	@RequestMapping(method=RequestMethod.POST, value="/{categoria}", produces="application/json" )
-	public String work(@PathVariable String categoria, @RequestBody String body ) throws RequestBodyException, JsonProcessingException {
+	public String work(@PathVariable String categoria, @RequestBody String body ) throws JsonProcessingException {
 
 		body = body.replaceAll("[\\[\\]]","");
 		body = body.replaceAll(" ","");
@@ -87,7 +105,7 @@ public class MainController {
 		in.useDelimiter(patt);
 
 		ObjectMapper obj = new ObjectMapper();
-		DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.ITALIAN);
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.ITALIAN);
 		obj.setDateFormat(dateFormat);
 
 		//Informazioni contenute nel requestBody
@@ -110,17 +128,23 @@ public class MainController {
 		ArrayList<Response> risposta=new ArrayList<Response>();
 
 		for(Paese p:paesi) {
+			
 			ArrayList<Bundle> dato=new ArrayList<Bundle>();
-			Response response = new Response();
 			dato.addAll( RequestGenerator.getData(categoria, p.getSlug()) );
-
+			if(dato.size() == 0)
+				return "Nessun dato per il paese: " + p.getCountry();
+			
 			if(hasFilter) {
 				FormatData.convert(dato, filtro.isPercentuale() );
 				Filter.filtra(dato, filtro);
 			}
 			else
 				FormatData.convert(dato, hasFilter );
-
+			
+			if(dato.size() == 0)
+				return "Non ci sono dati che soddisfano il filtro per il paese:" + p.getCountry();
+			
+			Response response = new Response();
 			response.setMax( ResponseGenerator.getResponseMax(dato) );
 			response.setMin( ResponseGenerator.getResponseMin(dato) );
 			risposta.add(response);
@@ -133,16 +157,18 @@ public class MainController {
 		return risp;
   }
   
+	
   /**
 	*Metodo che gestisce la richiesta di una statistica sui dati
 	*
 	*@param categoria tipologia di dato su cui effettuare la ricerca
 	*@param tipostat tipologia di statistica richiesta
 	*@param body json contenente i paesi d'interesse ed il filtro da applicare ai dati
+	*@throws JsonProcessingException
 	*@return Json contenente dati con maggiore o minore impatto
 	*/
 	@RequestMapping(method=RequestMethod.POST, value="/{categoria}/{tipostat}", produces="application/json" )
-	public String workWithStat(@PathVariable String categoria, @PathVariable String tipostat, @RequestBody String body ) throws JsonProcessingException, ParseException, RequestBodyException {
+	public String workWithStat(@PathVariable String categoria, @PathVariable String tipostat, @RequestBody String body ) throws JsonProcessingException {
 
 		body = body.replaceAll("[\\[\\]]","");
 		body = body.replaceAll(" ","");
@@ -151,7 +177,7 @@ public class MainController {
 		in.useDelimiter(patt);
 
 		ObjectMapper obj = new ObjectMapper();
-		DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.ITALIAN);
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.ITALIAN);
 		obj.setDateFormat(dateFormat);
 
 		//Informazioni contenute nel requestBody
@@ -175,16 +201,22 @@ public class MainController {
 		ArrayList<ResponseStat> risposta=new ArrayList<ResponseStat>();
 
 		for(Paese p:paesi) {
+			
 			ArrayList<Bundle> dato=new ArrayList<Bundle>();
 			dato.addAll( RequestGenerator.getData(categoria, p.getSlug()) );
-
+			if(dato.size() == 0)
+				return "Nessun dato per il paese selezionato";
+			
 			if(hasFilter) {
 				FormatData.convert(dato, filtro.isPercentuale() );
 				Filter.filtra(dato, filtro);
 			}
 			else
 				FormatData.convert(dato, hasFilter );
-
+			
+			if(dato.size() == 0)
+				return "Non ci sono dati che soddisfano il filtro";
+			
 			risposta.add(StatsGenerator.getStat(dato, tipostat));
 		}
 

@@ -23,7 +23,6 @@ public class FormatData {
 	public static void convert(ArrayList<Bundle> bundle, boolean isPercentuale ) {
 
 		int[] numCasi = new int[bundle.size()];
-    
 		for(int i=0; i<bundle.size(); i++) 
 			numCasi[i] = (int) bundle.get(i).getCases();
 
@@ -58,7 +57,7 @@ public class FormatData {
 			}
 		}
 	}
-
+	
 
 	/**
 	*Metodo che effettua la conversione da dati cumulativi in dati assoluti
@@ -68,8 +67,9 @@ public class FormatData {
 	*/
 	private static void differenza(ArrayList<Bundle> bundle, int numCasi[]) {
 
-		for(int i=1; i<bundle.size(); i++)
+		for(int i=1; i<bundle.size(); i++) {
 			bundle.get(i).setCases( numCasi[i] - numCasi[i-1] );
+		}
 	}
 
 }
