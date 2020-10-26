@@ -49,7 +49,6 @@ public class ResponseGenerator {
 			if(bundle.get(i).getCases() < min) {
 				min = bundle.get(i).getCases();
 				dayMin = bundle.get(i);
-				int f=0;
 			}
 		}
 		return dayMin;

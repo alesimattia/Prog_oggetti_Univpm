@@ -1,0 +1,120 @@
+{
+	"info": {
+		"_postman_id": "a10f6249-bb42-486b-92f6-243988f2b665",
+		"name": "Java rest",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "multi paese",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"Country\": \"Barbados\",\r\n\t\"Slug\": \"barbados\",\r\n\t\"ISO2\": \"BB\"\r\n},\r\n{\r\n\t\"Country\": \"Germany\",\r\n\t\"Slug\": \"germany\",\r\n\t\"ISO2\": \"DE\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/contagi",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"contagi"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "richiesta filtro",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"Country\": \"Italy\",\r\n\t\"Slug\": \"italy\",\r\n\t\"ISO2\": \"IT\"\r\n},\r\n{\r\n\t\"percentuale\": false,\r\n\t\"valoremax\": 1800,\r\n\t\"valoremin\": 25,\r\n\t\"datamax\": \"20/09/2020\",\r\n\t\"datamin\": \"15/06/2020\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/contagi",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"contagi"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Statistiche",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"Country\": \"Italy\",\r\n\t\"Slug\": \"italy\",\r\n\t\"ISO2\": \"IT\"\r\n},\r\n{\r\n\t\"Country\": \"Germany\",\r\n\t\"Slug\": \"germany\",\r\n\t\"ISO2\": \"DE\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/contagi/contagiorni",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"contagi",
+						"contagiorni"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Stat + filtro",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"Country\": \"Switzerland\",\r\n\t\"Slug\": \"switzerland\",\r\n\t\"ISO2\": \"CH\"\r\n},\r\n{\r\n\t\"percentuale\": false,\r\n\t\"valoremax\": 1800,\r\n\t\"valoremin\": 25,\r\n\t\"datamax\": \"20/09/2020\",\r\n\t\"datamin\": \"15/06/2020\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/contagi/min",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"contagi",
+						"min"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

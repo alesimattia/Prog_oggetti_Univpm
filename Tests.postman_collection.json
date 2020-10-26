@@ -1,0 +1,82 @@
+{
+	"info": {
+		"_postman_id": "0f4f67db-592b-43cd-924f-e154f2aa73cf",
+		"name": "Tests",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "No RequestBody",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/contagi",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"contagi"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Wrong JSON format",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"Country\": \"Switzerland\",\r\n\t\"Slug\": \"switzerland\",\r\n\t\"ISO2\": \"CH\"\r\n},\r\n{\r\n\t\"percentuale\": false,\r\n\t\"valoremaXXXX\": 1800,\r\n\t\"valoremin\": 25,\r\n\t\"datamax\": \"20/09/2020\",\r\n\t\"datamin\": \"15/06/2020\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/contagi",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"contagi"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Wrong JSON values",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\t\"Country\": \"Switzerland\",\r\n\t\"Slug\": \"switzerland\",\r\n\t\"ISO2\": \"CH\"\r\n},\r\n{\r\n\t\"percentuale\": false,\r\n\t\"valoremax\": 1f80fff0,\r\n\t\"valoremin\": 25,\r\n\t\"datamax\": \"20/09/2020\",\r\n\t\"datamin\": \"15/06/2020\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/contagi",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"contagi"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
