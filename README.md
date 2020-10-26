@@ -19,7 +19,7 @@ Successivamente, i dati che sono in formato testuale, vengono modellati in un'ap
 ## Diagramma delle Classi
 <br>
 
-![diag_classi](/diagramma_classi.png)
+![diag_classi](/Diagramma_classi.png)
 <br><br>
 
 ---
